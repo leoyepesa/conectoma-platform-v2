@@ -32,7 +32,7 @@ export function Hero() {
             <MapPin size={16} className="text-accent" /> Universidad Santo Tomás · Sede Central, Bogotá
           </span>
           <span className="flex items-center gap-2">
-            <Calendar size={16} className="text-accent" /> 2 días · Jornada diurna presencial y nocturna virtual
+            <Calendar size={16} className="text-accent" /> 28 y 29 de Octubre de 2026 · Jornada diurna presencial y nocturna virtual
           </span>
         </div>
 
