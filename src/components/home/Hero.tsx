@@ -15,7 +15,7 @@ export function Hero() {
       />
       <div className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
         <div className="mb-4 inline-block rounded-full border border-accent px-3 py-1 font-display text-[11px] font-semibold uppercase tracking-widest text-accent">
-          II Edición · División de Ingenierías
+          II Edición · División de Ingenierías y Arquitectura
         </div>
         <h1 className="font-display text-5xl font-bold leading-[0.95] tracking-tight text-ink md:text-7xl">
           Congreso CONECTOMA
