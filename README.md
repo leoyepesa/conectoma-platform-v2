@@ -41,3 +41,4 @@ Ver [`DEPLOY_GUIDE.md`](./DEPLOY_GUIDE.md) para el paso a paso de configuración
 ## ⚠️ Nota de seguridad
 
 Este repositorio es público. Nunca subas archivos con credenciales, tokens o llaves API al repo (por ejemplo, un archivo llamado `token_github`). Usa siempre variables de entorno (`.env`, que está en `.gitignore`) o los "Environment variables" de Netlify.
+# conectoma-platform-v2
