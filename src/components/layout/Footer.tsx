@@ -14,7 +14,7 @@ export function Footer() {
               <br />
               Universidad Santo Tomás, Bogotá
               <br />
-              División de Ingenierías
+              División de Ingenierías y Arquitectura
             </p>
           </div>
           <div>
@@ -35,7 +35,7 @@ export function Footer() {
             <p className="mt-3 text-sm text-ink/70">
               Sede Central USTA, Bogotá
               <br />
-              ingenia@usantotomas.edu.co
+              congreso.ingenieria@usta.edu.co
             </p>
           </div>
         </div>
