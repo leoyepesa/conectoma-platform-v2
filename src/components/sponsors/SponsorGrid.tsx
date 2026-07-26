@@ -14,7 +14,7 @@ export function SponsorGrid({ sponsors }: { sponsors: Sponsor[] }) {
     return (
       <div className="rounded-xl border border-dashed border-ink/20 p-10 text-center text-sm text-ink/40">
         Los patrocinadores se publicarán próximamente. ¿Quieres aliarte con CONECTOMA?{' '}
-        <a href="mailto:ingenia@usantotomas.edu.co" className="font-medium text-accent underline">
+        <a href="mailto:congreso.ingenieria@usta.edu.co" className="font-medium text-accent underline">
           Escríbenos
         </a>
         .
