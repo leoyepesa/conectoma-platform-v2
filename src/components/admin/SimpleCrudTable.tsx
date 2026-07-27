@@ -56,9 +56,15 @@ export function SimpleCrudTable({ table, columns, emptyRow, orderBy = 'order_ind
   }
 
   function addRow() {
-    const id = crypto.randomUUID();
-    setRows((rs) => [...rs, { ...emptyRow, id, order_index: rs.length + 1 }]);
+  const id = crypto.randomUUID();
+  const newRow: Record<string, unknown> = { ...emptyRow, id };
+  // Solo asigna order_index si la entidad realmente tiene esa columna
+  // (ej. news no la tiene, se ordena por published_at)
+  if ('order_index' in emptyRow) {
+    newRow.order_index = rows.length + 1;
   }
+  setRows((rs) => [...rs, newRow]);
+ }
 
   return (
     <div>
