@@ -143,6 +143,32 @@ create policy "submissions_editor_write" on submissions for update using (public
 create policy "submissions_editor_delete" on submissions for delete using (public.is_editor());
 
 -- ═══════════════════════════════════════════════════════════════
+-- STORAGE: bucket para los archivos de artículos y pósters
+-- Permite que cualquier visitante suba su documento desde el
+-- formulario público de /convocatoria, sin necesidad de iniciar sesión.
+-- ═══════════════════════════════════════════════════════════════
+
+insert into storage.buckets (id, name, public, file_size_limit)
+values ('submissions', 'submissions', true, 15728640) -- 15 MB
+on conflict (id) do nothing;
+
+-- Cualquiera puede subir un archivo nuevo al bucket "submissions"
+create policy "submissions_bucket_public_upload"
+  on storage.objects for insert
+  with check (bucket_id = 'submissions');
+
+-- El archivo es público para lectura (así el enlace funciona sin login,
+-- tanto para el comité como para quien postuló)
+create policy "submissions_bucket_public_read"
+  on storage.objects for select
+  using (bucket_id = 'submissions');
+
+-- Solo editores/admin pueden borrar archivos subidos
+create policy "submissions_bucket_editor_delete"
+  on storage.objects for delete
+  using (bucket_id = 'submissions' and public.is_editor());
+
+-- ═══════════════════════════════════════════════════════════════
 -- Después de correr este script:
 -- 1. Ve a Authentication → Users → "Add user" y crea tu primer usuario admin.
 -- 2. Ve a Table Editor → profiles, busca ese usuario y cambia su "role" a 'admin'.

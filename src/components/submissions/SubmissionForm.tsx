@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { UploadCloud, FileText, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import type { SubmissionType, Track } from '../../types';
 
@@ -14,19 +15,58 @@ const initial = {
   contact_phone: '',
 };
 
+const MAX_FILE_MB = 15;
+const ACCEPTED = '.pdf,.doc,.docx,.ppt,.pptx';
+
 export function SubmissionForm() {
   const [form, setForm] = useState(initial);
+  const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0] ?? null;
+    if (f && f.size > MAX_FILE_MB * 1024 * 1024) {
+      setErrorMsg(`El archivo supera el límite de ${MAX_FILE_MB} MB.`);
+      e.target.value = '';
+      setFile(null);
+      return;
+    }
+    setErrorMsg('');
+    setFile(f);
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setStatus('sending');
     setErrorMsg('');
 
+    let file_url = '';
+
+    if (file) {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = `${crypto.randomUUID()}-${safeName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('submissions')
+        .upload(path, file, { cacheControl: '3600', upsert: false });
+
+      if (uploadError) {
+        setStatus('error');
+        setErrorMsg(
+          'No pudimos subir el archivo. Verifica el formato/tamaño e inténtalo de nuevo, o escríbenos a congreso.ingenieria@usta.edu.co.'
+        );
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage.from('submissions').getPublicUrl(path);
+      file_url = publicUrlData.publicUrl;
+    }
+
     const { error } = await supabase.from('submissions').insert([
       {
         ...form,
+        file_url,
         status: 'recibido',
       },
     ]);
@@ -34,12 +74,13 @@ export function SubmissionForm() {
     if (error) {
       setStatus('error');
       setErrorMsg(
-        'No pudimos enviar tu propuesta. Verifica tu conexión o escríbenos a ingenia@usantotomas.edu.co.'
+        'No pudimos enviar tu propuesta. Verifica tu conexión o escríbenos a congreso.ingenieria@usta.edu.co.'
       );
       return;
     }
     setStatus('sent');
     setForm(initial);
+    setFile(null);
   }
 
   if (status === 'sent') {
@@ -121,15 +162,36 @@ export function SubmissionForm() {
         />
       </Field>
 
-      <Field label="Enlace al documento (Drive, OneDrive, etc.)">
-        <input
-          type="url"
-          placeholder="https://..."
-          value={form.file_url}
-          onChange={(e) => setForm((f) => ({ ...f, file_url: e.target.value }))}
-          className="input"
-        />
+      <Field label="Documento del trabajo (PDF, Word o PowerPoint)">
+        {!file ? (
+          <label className="focus-ring flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-ink/20 bg-paper px-4 py-8 text-center transition-colors hover:border-accent">
+            <UploadCloud size={22} className="text-ink/40" />
+            <span className="text-sm font-medium text-ink/60">
+              Haz clic para elegir un archivo desde tu computador
+            </span>
+            <span className="text-xs text-ink/40">PDF, DOC, DOCX, PPT o PPTX · máx. {MAX_FILE_MB} MB</span>
+            <input type="file" accept={ACCEPTED} onChange={handleFileChange} className="hidden" />
+          </label>
+        ) : (
+          <div className="flex items-center gap-3 rounded-xl border border-ink/15 bg-paper px-4 py-3">
+            <FileText size={18} className="flex-shrink-0 text-accent" />
+            <span className="flex-1 truncate text-sm text-ink/70">{file.name}</span>
+            <span className="flex-shrink-0 text-xs text-ink/40">
+              {(file.size / (1024 * 1024)).toFixed(1)} MB
+            </span>
+            <button
+              type="button"
+              onClick={() => setFile(null)}
+              className="focus-ring flex-shrink-0 rounded p-1 text-ink/40 hover:text-red-600"
+              aria-label="Quitar archivo"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        )}
       </Field>
+
+      {errorMsg && status !== 'error' && <p className="text-sm text-red-600">{errorMsg}</p>}
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Correo de contacto" required>
