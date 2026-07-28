@@ -17,9 +17,18 @@ interface Props {
   orderBy?: string;
   title: string;
   description?: string;
+  renderExtraActions?: (row: Record<string, unknown>) => React.ReactNode;
 }
 
-export function SimpleCrudTable({ table, columns, emptyRow, orderBy = 'order_index', title, description }: Props) {
+export function SimpleCrudTable({
+  table,
+  columns,
+  emptyRow,
+  orderBy = 'order_index',
+  title,
+  description,
+  renderExtraActions,
+}: Props) {
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -56,15 +65,15 @@ export function SimpleCrudTable({ table, columns, emptyRow, orderBy = 'order_ind
   }
 
   function addRow() {
-  const id = crypto.randomUUID();
-  const newRow: Record<string, unknown> = { ...emptyRow, id };
-  // Solo asigna order_index si la entidad realmente tiene esa columna
-  // (ej. news no la tiene, se ordena por published_at)
-  if ('order_index' in emptyRow) {
-    newRow.order_index = rows.length + 1;
+    const id = crypto.randomUUID();
+    const newRow: Record<string, unknown> = { ...emptyRow, id };
+    // Solo asigna order_index si la entidad realmente tiene esa columna
+    // (ej. news no la tiene, se ordena por published_at)
+    if ('order_index' in emptyRow) {
+      newRow.order_index = rows.length + 1;
+    }
+    setRows((rs) => [...rs, newRow]);
   }
-  setRows((rs) => [...rs, newRow]);
- }
 
   return (
     <div>
@@ -99,7 +108,8 @@ export function SimpleCrudTable({ table, columns, emptyRow, orderBy = 'order_ind
                 </label>
               ))}
             </div>
-            <div className="mt-3 flex justify-end gap-2">
+            <div className="mt-3 flex flex-wrap justify-end gap-2">
+              {renderExtraActions?.(row)}
               <button
                 onClick={() => deleteRow(row.id as string)}
                 className="focus-ring flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
