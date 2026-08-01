@@ -16,7 +16,7 @@ export function CallForPapers() {
           Convocatoria abierta
         </div>
         <h1 className="mt-2 font-display text-3xl font-bold text-ink md:text-4xl">
-          Envía tu artículo o póster
+          Envía tu artículo
         </h1>
         <p className="mt-2 text-ink/60">
           IngenIA 2026 recibe propuestas de investigación de estudiantes y docentes para ser presentadas en la

@@ -14,12 +14,12 @@ export const templates: DocTemplate[] = [
     description: 'Formato oficial para la redacción de artículos, máx. 8 páginas.',
     fileName: 'plantilla-articulo.doc',
   },
-  {
+/*  {
     id: 'poster',
     label: 'Plantilla de póster (PowerPoint)',
     description: 'Formato oficial 90x120 cm para pósters de investigación.',
     fileName: 'plantilla-poster.pptx',
-  },
+  },*/
   {
     id: 'normas',
     label: 'Normas para autores (PDF)',
