@@ -1,4 +1,5 @@
 import { SubmissionForm } from '../components/submissions/SubmissionForm';
+import { TemplatesDownload } from '../components/submissions/TemplatesDownload';
 
 const criteria = [
   ['Originalidad', 'Trabajos inéditos, no publicados previamente en otros congresos o revistas.'],
@@ -24,16 +25,20 @@ export function CallForPapers() {
       </header>
 
       <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr]">
-        <div className="space-y-4">
-          <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-ink/40">
-            Criterios de evaluación
-          </h2>
-          {criteria.map(([title, desc]) => (
-            <div key={title} className="rounded-xl border border-ink/10 bg-white p-4">
-              <div className="font-display text-sm font-semibold text-ink">{title}</div>
-              <div className="mt-1 text-sm text-ink/60">{desc}</div>
-            </div>
-          ))}
+        <div className="space-y-8">
+          <TemplatesDownload />
+
+          <div className="space-y-4">
+            <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-ink/40">
+              Criterios de evaluación
+            </h2>
+            {criteria.map(([title, desc]) => (
+              <div key={title} className="rounded-xl border border-ink/10 bg-white p-4">
+                <div className="font-display text-sm font-semibold text-ink">{title}</div>
+                <div className="mt-1 text-sm text-ink/60">{desc}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <SubmissionForm />
