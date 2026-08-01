@@ -1,7 +1,7 @@
 import { ExternalLink, CheckCircle2 } from 'lucide-react';
 
 const SUMMA_URL =
-  import.meta.env.VITE_SUMMA_REGISTRATION_URL || 'https://summa.usantotomas.edu.co/';
+  import.meta.env.VITE_SUMMA_REGISTRATION_URL || 'https://santotosumma.edu.co/curso/ii-congreso-internacional-conectoma-ingenia/';
 
 const steps = [
   'Ingresa a la plataforma SUMMA con tu usuario institucional (o crea una cuenta si eres externo).',
