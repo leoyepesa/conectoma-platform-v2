@@ -10,7 +10,7 @@ export function SponsorsAdmin() {
       emptyRow={{ name: '', logo_url: '', website_url: '', tier: 'aliado', order_index: 0 }}
       columns={[
         { key: 'name', label: 'Nombre' },
-        { key: 'logo_url', label: 'URL del logo' },
+        { key: 'logo_url', label: 'Logo', type: 'image' },
         { key: 'website_url', label: 'Sitio web' },
         { key: 'tier', label: 'Nivel', type: 'select', options: [
           { value: 'platino', label: 'Platino' }, { value: 'oro', label: 'Oro' },

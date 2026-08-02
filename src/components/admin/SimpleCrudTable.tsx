@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Plus, Trash2, Save } from 'lucide-react';
+import { Plus, Trash2, Save, ImagePlus, Loader2, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 export interface ColumnDef {
   key: string;
   label: string;
-  type?: 'text' | 'textarea' | 'number' | 'select' | 'checkbox' | 'datetime';
+  type?: 'text' | 'textarea' | 'number' | 'select' | 'checkbox' | 'datetime' | 'image';
   options?: { value: string; label: string }[];
   width?: string;
 }
@@ -146,6 +146,9 @@ function FieldInput({
   value: unknown;
   onChange: (v: unknown) => void;
 }) {
+  if (col.type === 'image') {
+    return <ImageUploadField value={value as string} onChange={onChange} />;
+  }
   if (col.type === 'textarea') {
     return (
       <textarea
@@ -194,5 +197,77 @@ function FieldInput({
       onChange={(e) => onChange(e.target.value)}
       className="input"
     />
+  );
+}
+
+const MAX_IMAGE_MB = 5;
+const IMAGE_ACCEPT = 'image/png,image/jpeg,image/webp,image/svg+xml';
+
+function ImageUploadField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
+      setError(`La imagen supera el límite de ${MAX_IMAGE_MB} MB.`);
+      return;
+    }
+
+    setUploading(true);
+    setError('');
+
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path = `${crypto.randomUUID()}-${safeName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('site-images')
+      .upload(path, file, { cacheControl: '3600', upsert: false });
+
+    setUploading(false);
+
+    if (uploadError) {
+      setError('No se pudo subir la imagen. Verifica el formato/tamaño e inténtalo de nuevo.');
+      return;
+    }
+
+    const { data } = supabase.storage.from('site-images').getPublicUrl(path);
+    onChange(data.publicUrl);
+  }
+
+  return (
+    <div>
+      {value ? (
+        <div className="flex items-center gap-2 rounded-lg border border-ink/15 bg-paper p-2">
+          <img src={value} alt="" className="h-12 w-12 flex-shrink-0 rounded object-cover" />
+          <span className="flex-1 truncate text-xs text-ink/50">{value}</span>
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className="focus-ring flex-shrink-0 rounded p-1 text-ink/40 hover:text-red-600"
+            aria-label="Quitar imagen"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      ) : (
+        <label className="focus-ring flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-ink/20 bg-paper py-2.5 text-xs font-medium text-ink/50 transition-colors hover:border-accent hover:text-accent">
+          {uploading ? (
+            <>
+              <Loader2 size={14} className="animate-spin" /> Subiendo…
+            </>
+          ) : (
+            <>
+              <ImagePlus size={14} /> Subir imagen
+            </>
+          )}
+          <input type="file" accept={IMAGE_ACCEPT} onChange={handleFile} className="hidden" disabled={uploading} />
+        </label>
+      )}
+      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+    </div>
   );
 }

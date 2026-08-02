@@ -169,6 +169,32 @@ create policy "submissions_bucket_editor_delete"
   using (bucket_id = 'submissions' and public.is_editor());
 
 -- ═══════════════════════════════════════════════════════════════
+-- STORAGE: bucket para imágenes subidas desde el panel admin
+-- (portadas de noticias, fotos de speakers, logos de sponsors).
+-- A diferencia de "submissions", solo editores/admin pueden subir,
+-- ya que se usa desde /admin con sesión iniciada.
+-- ═══════════════════════════════════════════════════════════════
+
+insert into storage.buckets (id, name, public, file_size_limit)
+values ('site-images', 'site-images', true, 5242880) -- 5 MB
+on conflict (id) do nothing;
+
+-- Solo editores/admin pueden subir imágenes
+create policy "site_images_editor_upload"
+  on storage.objects for insert
+  with check (bucket_id = 'site-images' and public.is_editor());
+
+-- Lectura pública (las imágenes se muestran en el sitio sin login)
+create policy "site_images_public_read"
+  on storage.objects for select
+  using (bucket_id = 'site-images');
+
+-- Solo editores/admin pueden borrar imágenes
+create policy "site_images_editor_delete"
+  on storage.objects for delete
+  using (bucket_id = 'site-images' and public.is_editor());
+
+-- ═══════════════════════════════════════════════════════════════
 -- Después de correr este script:
 -- 1. Ve a Authentication → Users → "Add user" y crea tu primer usuario admin.
 -- 2. Ve a Table Editor → profiles, busca ese usuario y cambia su "role" a 'admin'.

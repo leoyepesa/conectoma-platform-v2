@@ -12,7 +12,7 @@ export function NewsAdmin() {
         { key: 'title', label: 'Título' },
         { key: 'summary', label: 'Resumen corto', type: 'textarea' },
         { key: 'content', label: 'Contenido completo', type: 'textarea' },
-        { key: 'cover_image_url', label: 'Imagen de portada (URL)' },
+        { key: 'cover_image_url', label: 'Imagen de portada', type: 'image' },
         { key: 'published_at', label: 'Fecha (ISO)' },
         { key: 'published', label: 'Publicada', type: 'checkbox' },
       ]}

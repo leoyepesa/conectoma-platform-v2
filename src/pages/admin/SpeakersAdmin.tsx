@@ -12,7 +12,7 @@ export function SpeakersAdmin() {
         { key: 'role', label: 'Rol (ej. Conferencista Línea 1)' },
         { key: 'name', label: 'Nombre completo' },
         { key: 'bio', label: 'Biografía / tema', type: 'textarea' },
-        { key: 'photo_url', label: 'URL de foto' },
+        { key: 'photo_url', label: 'Foto', type: 'image' },
         { key: 'linkedin_url', label: 'URL LinkedIn' },
         { key: 'track', label: 'Línea', type: 'select', options: [
           { value: 'general', label: 'General' }, { value: 'l1', label: 'Línea 1' },
