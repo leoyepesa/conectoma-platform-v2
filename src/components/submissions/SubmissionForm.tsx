@@ -15,6 +15,10 @@ const initial = {
   contact_phone: '',
 };
 
+// La postulación de pósters está desactivada por ahora — solo se reciben artículos.
+// Para reactivarla, vuelve a agregar el selector de tipo que estaba antes de esta constante.
+const POSTER_ENABLED = false;
+
 const MAX_FILE_MB = 15;
 const ACCEPTED = '.pdf,.doc,.docx,.ppt,.pptx';
 
@@ -97,20 +101,26 @@ export function SubmissionForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-ink/10 bg-white p-6 md:p-8">
-      <div className="flex gap-3">
-        {(['articulo', 'poster'] as const).map((t) => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setForm((f) => ({ ...f, type: t }))}
-            className={`focus-ring flex-1 rounded-xl border py-3 text-sm font-semibold capitalize transition-colors ${
-              form.type === t ? 'border-accent bg-accent/10 text-accent' : 'border-ink/10 text-ink/50'
-            }`}
-          >
-            {t === 'articulo' ? 'Artículo' : 'Póster'}
-          </button>
-        ))}
-      </div>
+      {POSTER_ENABLED ? (
+        <div className="flex gap-3">
+          {(['articulo', 'poster'] as const).map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, type: t }))}
+              className={`focus-ring flex-1 rounded-xl border py-3 text-sm font-semibold capitalize transition-colors ${
+                form.type === t ? 'border-accent bg-accent/10 text-accent' : 'border-ink/10 text-ink/50'
+              }`}
+            >
+              {t === 'articulo' ? 'Artículo' : 'Póster'}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-accent bg-accent/10 px-4 py-3 text-center text-sm font-semibold text-accent">
+          Postulación de artículos
+        </div>
+      )}
 
       <Field label="Título del trabajo" required>
         <input
