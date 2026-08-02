@@ -98,7 +98,7 @@ export function SimpleCrudTable({
           <div key={row.id as string} className="rounded-xl border border-ink/10 bg-white p-4">
             <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${Math.min(columns.length, 3)}, 1fr)` }}>
               {columns.map((col) => (
-                <label key={col.key} className="block">
+                <label key={col.key} className="block min-w-0">
                   <span className="mb-1 block text-xs font-medium text-ink/50">{col.label}</span>
                   <FieldInput
                     col={col}
@@ -239,11 +239,21 @@ function ImageUploadField({ value, onChange }: { value: string; onChange: (v: st
   }
 
   return (
-    <div>
+    <div className="min-w-0">
       {value ? (
-        <div className="flex items-center gap-2 rounded-lg border border-ink/15 bg-paper p-2">
-          <img src={value} alt="" className="h-12 w-12 flex-shrink-0 rounded object-cover" />
-          <span className="flex-1 truncate text-xs text-ink/50">{value}</span>
+        <div className="flex min-w-0 items-center gap-2 rounded-lg border border-ink/15 bg-paper p-2">
+          <img src={value} alt="" className="h-10 w-10 flex-shrink-0 rounded object-cover" />
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-xs font-medium text-ink/60">Imagen cargada</div>
+            <a
+              href={value}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="focus-ring text-[11px] text-accent hover:underline"
+            >
+              Ver imagen completa
+            </a>
+          </div>
           <button
             type="button"
             onClick={() => onChange('')}
